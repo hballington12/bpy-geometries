@@ -11,6 +11,19 @@ class Geometry(ABC):
     def generate(self) -> str:
         pass
 
+    @abstractmethod
+    def to_filename(self) -> str:
+        """
+        Return a complete filename (without extension) for this geometry.
+
+        This string should contain the geometry type and all parameters needed
+        to reconstruct the geometry.
+
+        Returns:
+            Filename string with geometry name and parameter key-value pairs
+        """
+        pass
+
     def _clear_scene(self):
         bpy.ops.object.select_all(action="SELECT")
         bpy.ops.object.delete()

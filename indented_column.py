@@ -161,14 +161,16 @@ class IndentedColumn(Geometry):
         obj_A.name = "IndentedColumn"
         return obj_A
 
+    def to_filename(self) -> str:
+        """Return complete filename without extension."""
+        indent_str = f"{self.indentation_amount:.2f}".replace(".", "p")
+        return f"indented_column_l{self.length}_r{self.radius}_indent{indent_str}"
+
     def generate(self) -> str:
         self._clear_scene()
         obj = self._create_geometry()
 
-        indent_str = f"{self.indentation_amount:.2f}".replace(".", "p")
-        filename = (
-            f"indented_column_l{self.length}_r{self.radius}_indent{indent_str}.obj"
-        )
+        filename = f"{self.to_filename()}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

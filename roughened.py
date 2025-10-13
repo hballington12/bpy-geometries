@@ -137,6 +137,13 @@ class Roughened(Geometry):
         bpy.ops.object.mode_set(mode="OBJECT")
         print(f"Merged vertices within distance {self.merge_distance}")
 
+    def to_filename(self) -> str:
+        """Return complete filename without extension."""
+        sigma_str = f"{self.displacement_sigma:.1f}".replace(".", "p")
+        merge_str = f"{self.merge_distance:.1f}".replace(".", "p")
+        geom_filename = self.geometry.to_filename()
+        return f"roughened_edge{self.max_edge_length}_sigma{sigma_str}_merge{merge_str}_{geom_filename}"
+
     def generate(self) -> str:
         """
         Generate the wrapped geometry, apply roughness, and export.
@@ -161,12 +168,7 @@ class Roughened(Geometry):
         self.merge_vertices_by_distance(obj)
 
         # Export with modified filename
-        base_name = type(base_geometry).__name__.lower()
-        sigma_str = f"{self.displacement_sigma:.1f}".replace(".", "p")
-
-        # Build filename based on geometry attributes
-        geom_params = self._get_geometry_params(base_geometry)
-        filename = f"roughened_{base_name}_{geom_params}_edge{self.max_edge_length}_sigma{sigma_str}.obj"
+        filename = f"{self.to_filename()}.obj"
         filepath = self._export_obj(filename)
 
         print(f"\nExported to: {filepath}")
@@ -183,9 +185,3 @@ class Roughened(Geometry):
                 f"The geometry class must be updated to work with Roughened. "
                 f"Add a _create_geometry() method that returns the mesh object without exporting."
             )
-
-    def _get_geometry_params(self, geometry: Geometry) -> str:
-        """Extract parameter string from geometry for filename."""
-        if hasattr(geometry, "length") and hasattr(geometry, "radius"):
-            return f"l{geometry.length}_r{geometry.radius}"
-        return "unknown"

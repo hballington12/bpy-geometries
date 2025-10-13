@@ -15,11 +15,15 @@ class HexagonalColumn(Geometry):
         )
         return bpy.context.active_object
 
+    def to_filename(self) -> str:
+        """Return complete filename without extension."""
+        return f"hexagonal_column_l{self.length}_r{self.radius}"
+
     def generate(self) -> str:
         self._clear_scene()
         obj = self._create_geometry()
 
-        filename = f"hexagonal_column_l{self.length}_r{self.radius}.obj"
+        filename = f"{self.to_filename()}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

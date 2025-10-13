@@ -227,11 +227,17 @@ class HexagonalBulletRosette(Geometry):
 
         return aggregate
 
+    def to_filename(self) -> str:
+        """Return complete filename without extension."""
+        indentation_str = f"{self.indentation_factor:.2f}".replace(".", "p")
+        inset_str = f"{self.inset:.2f}".replace(".", "p")
+        return f"hexagonal_bullet_rosette_n{self.num_bullets}_l{self.length}_r{self.radius}_indentfactor{indentation_str}_inset{inset_str}"
+
     def generate(self) -> str:
         obj = self._create_geometry()
 
         # Export
-        filename = f"hexagonal_bullet_rosette_n{self.num_bullets}_l{self.length}_r{self.radius}.obj"
+        filename = f"{self.to_filename()}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

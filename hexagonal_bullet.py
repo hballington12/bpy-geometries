@@ -1,5 +1,6 @@
 import bpy
 import bmesh
+import math
 from geometry import Geometry
 
 
@@ -8,14 +9,21 @@ class HexagonalBullet(Geometry):
         self,
         length: float,
         radius: float,
-        indentation: float,
+        indentation_factor: float,
         inset: float,
         output_dir: str,
     ):
         super().__init__(output_dir)
+
+        # Validate indentation_factor
+        if indentation_factor < 0.0 or indentation_factor > 0.5:
+            raise ValueError(
+                f"indentation_factor must be between 0.0 and 0.5, got {indentation_factor}"
+            )
+
         self.length: float = length
         self.radius: float = radius
-        self.indentation: float = indentation
+        self.indentation_factor: float = indentation_factor
         self.inset: float = inset
         self.tolerance: float = 0.001
 
@@ -66,6 +74,24 @@ class HexagonalBullet(Geometry):
 
             bmesh.update_edit_mesh(obj.data)
 
+    def _calculate_indentation_depth(self) -> float:
+        """Calculate indentation depth from indentation_factor using same method as IndentedColumn."""
+        clamped_factor = max(0.0, min(0.5, self.indentation_factor))
+
+        if clamped_factor == 0.0:
+            return 0.0
+
+        if clamped_factor == 0.5:
+            effective_factor = 0.4999
+        else:
+            effective_factor = clamped_factor
+
+        angle_rad = (math.pi / 2) * effective_factor
+        tan_value = math.tan(angle_rad)
+        indentation_depth = (self.length / 2) * tan_value
+
+        return indentation_depth
+
     def _indent_top(self, obj: bpy.types.Object):
         bpy.ops.mesh.select_mode(type="FACE")
         bpy.ops.mesh.select_all(action="DESELECT")
@@ -91,13 +117,15 @@ class HexagonalBullet(Geometry):
         bm = bmesh.from_edit_mesh(obj.data)
         bm.verts.ensure_lookup_table()
         expected_z_top = self.length / 2.0
+        indentation_depth = self._calculate_indentation_depth()
+
         for v in bm.verts:
             if (
                 abs(v.co.x) < self.tolerance
                 and abs(v.co.y) < self.tolerance
                 and abs(v.co.z - expected_z_top) < self.tolerance
             ):
-                v.co.z -= self.indentation
+                v.co.z -= indentation_depth
                 break
         bmesh.update_edit_mesh(obj.data)
 
@@ -120,9 +148,8 @@ class HexagonalBullet(Geometry):
         if any(v.select for v in bm.verts):
             bpy.ops.mesh.merge(type="CENTER")
 
-    def generate(self) -> str:
-        self._clear_scene()
-
+    def _create_geometry(self) -> bpy.types.Object:
+        """Create the hexagonal bullet geometry and return the object without exporting."""
         obj = self._create_hexagonal_column()
 
         self._add_loop_cut(obj)
@@ -131,9 +158,15 @@ class HexagonalBullet(Geometry):
 
         bpy.ops.object.mode_set(mode="OBJECT")
 
-        indentation_str = f"{self.indentation:.2f}".replace(".", "p")
+        return obj
+
+    def generate(self) -> str:
+        self._clear_scene()
+        obj = self._create_geometry()
+
+        indentation_str = f"{self.indentation_factor:.2f}".replace(".", "p")
         inset_str = f"{self.inset:.2f}".replace(".", "p")
-        filename = f"hexagonal_bullet_l{self.length}_r{self.radius}_indent{indentation_str}_inset{inset_str}.obj"
+        filename = f"hexagonal_bullet_l{self.length}_r{self.radius}_indentfactor{indentation_str}_inset{inset_str}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

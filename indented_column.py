@@ -9,6 +9,13 @@ class IndentedColumn(Geometry):
         self, length: float, radius: float, indentation_amount: float, output_dir: str
     ):
         super().__init__(output_dir)
+
+        # Validate indentation_amount
+        if indentation_amount < 0.0 or indentation_amount > 1.0:
+            raise ValueError(
+                f"indentation_amount must be between 0.0 and 1.0, got {indentation_amount}"
+            )
+
         self.length: float = length
         self.radius: float = radius
         self.indentation_amount: float = indentation_amount
@@ -125,9 +132,8 @@ class IndentedColumn(Geometry):
         bmesh.update_edit_mesh(obj.data)
         bpy.ops.object.mode_set(mode="OBJECT")
 
-    def generate(self) -> str:
-        self._clear_scene()
-
+    def _create_geometry(self) -> bpy.types.Object:
+        """Create the indented column geometry and return the object without exporting."""
         indentation_depth = self._calculate_indentation_depth()
 
         obj_A = self._create_cylinder("Cylinder_TopIndented")
@@ -153,6 +159,11 @@ class IndentedColumn(Geometry):
         bpy.ops.object.delete()
 
         obj_A.name = "IndentedColumn"
+        return obj_A
+
+    def generate(self) -> str:
+        self._clear_scene()
+        obj = self._create_geometry()
 
         indent_str = f"{self.indentation_amount:.2f}".replace(".", "p")
         filename = (

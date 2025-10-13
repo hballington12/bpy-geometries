@@ -11,7 +11,7 @@ class HexagonalBulletRosette(Geometry):
         self,
         length: float,
         radius: float,
-        indentation: float,
+        indentation_factor: float,
         inset: float,
         num_bullets: int,
         output_dir: str,
@@ -19,7 +19,7 @@ class HexagonalBulletRosette(Geometry):
         super().__init__(output_dir)
         self.length: float = length
         self.radius: float = radius
-        self.indentation: float = indentation
+        self.indentation_factor: float = indentation_factor
         self.inset: float = inset
         self.num_bullets: int = num_bullets
         self.rotation_factor: float = 1.0
@@ -102,7 +102,7 @@ class HexagonalBulletRosette(Geometry):
         bullet_gen = HexagonalBullet(
             length=self.length,
             radius=self.radius,
-            indentation=self.indentation,
+            indentation_factor=self.indentation_factor,
             inset=self.inset,
             output_dir=self.output_dir,
         )
@@ -133,7 +133,8 @@ class HexagonalBulletRosette(Geometry):
 
         return obj
 
-    def generate(self) -> str:
+    def _create_geometry(self) -> bpy.types.Object:
+        """Create the hexagonal bullet rosette geometry and return the object without exporting."""
         self._clear_scene()
 
         existing_columns = []
@@ -223,6 +224,11 @@ class HexagonalBulletRosette(Geometry):
             aggregate.select_set(True)
             bpy.context.view_layer.objects.active = aggregate
         bpy.ops.object.shade_flat()
+
+        return aggregate
+
+    def generate(self) -> str:
+        obj = self._create_geometry()
 
         # Export
         filename = f"hexagonal_bullet_rosette_n{self.num_bullets}_l{self.length}_r{self.radius}.obj"

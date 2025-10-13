@@ -1,5 +1,5 @@
 import bpy
-from geometry import Geometry
+from .geometry import Geometry
 
 
 class HexagonalColumn(Geometry):

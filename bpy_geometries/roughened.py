@@ -1,7 +1,7 @@
 import bpy
 import bmesh
 import random
-from geometry import Geometry
+from .geometry import Geometry
 
 
 class Roughened(Geometry):

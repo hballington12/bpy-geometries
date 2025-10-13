@@ -3,18 +3,14 @@
 Test roughened geometry generation with Roughened wrapper.
 """
 
-import sys
 import os
 import bpy
 
-# Add parent directory to path to import geometry modules
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from hexagonal_column import HexagonalColumn
-from indented_column import IndentedColumn
-from hexagonal_bullet import HexagonalBullet
-from hexagonal_bullet_rosette import HexagonalBulletRosette
-from roughened import Roughened
+from bpy_geometries.hexagonal_column import HexagonalColumn
+from bpy_geometries.indented_column import IndentedColumn
+from bpy_geometries.hexagonal_bullet import HexagonalBullet
+from bpy_geometries.hexagonal_bullet_rosette import HexagonalBulletRosette
+from bpy_geometries.roughened import Roughened
 
 
 if __name__ == "__main__":

@@ -2,8 +2,8 @@ import bpy
 import math
 import random
 from mathutils import Vector, Euler
-from geometry import Geometry
-from hexagonal_bullet import HexagonalBullet
+from .geometry import Geometry
+from .hexagonal_bullet import HexagonalBullet
 
 
 class HexagonalBulletRosette(Geometry):

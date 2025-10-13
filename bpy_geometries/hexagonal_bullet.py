@@ -1,7 +1,7 @@
 import bpy
 import bmesh
 import math
-from geometry import Geometry
+from .geometry import Geometry
 
 
 class HexagonalBullet(Geometry):

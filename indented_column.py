@@ -154,7 +154,7 @@ class IndentedColumn(Geometry):
 
         obj_A.name = "IndentedColumn"
 
-        indent_str = f"{self.indentation_amount:.1f}".replace(".", "p")
+        indent_str = f"{self.indentation_amount:.2f}".replace(".", "p")
         filename = (
             f"indented_column_l{self.length}_r{self.radius}_indent{indent_str}.obj"
         )

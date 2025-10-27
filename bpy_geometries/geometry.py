@@ -28,9 +28,43 @@ class Geometry(ABC):
         bpy.ops.object.select_all(action="SELECT")
         bpy.ops.object.delete()
 
+    def _cleanup_degenerate_faces(self):
+        """
+        Remove degenerate mesh elements (very thin triangles, zero-area faces).
+
+        This is equivalent to Blender's Edit Mode → Mesh → Cleanup → Degenerate Dissolve.
+        Operates on all mesh objects in the scene.
+        """
+        # Store current mode
+        current_mode = bpy.context.object.mode if bpy.context.object else 'OBJECT'
+
+        # Find all mesh objects
+        mesh_objects = [obj for obj in bpy.data.objects if obj.type == 'MESH']
+
+        if not mesh_objects:
+            return
+
+        # Process each mesh object
+        for obj in mesh_objects:
+            bpy.context.view_layer.objects.active = obj
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_all(action='SELECT')
+
+            # Dissolve degenerate geometry
+            # threshold: minimum distance between elements to merge (default: 1e-4)
+            bpy.ops.mesh.dissolve_degenerate(threshold=1e-4)
+
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+        print(f"Cleaned up degenerate faces from {len(mesh_objects)} mesh object(s)")
+
     def _export_obj(self, filename):
         filepath = os.path.join(self.output_dir, filename)
         os.makedirs(self.output_dir, exist_ok=True)
+
+        # Clean up degenerate faces before export
+        self._cleanup_degenerate_faces()
+
         bpy.ops.wm.obj_export(
             filepath=filepath,
             export_selected_objects=False,

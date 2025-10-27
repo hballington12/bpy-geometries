@@ -52,7 +52,7 @@ class Geometry(ABC):
 
             # Dissolve degenerate geometry
             # threshold: minimum distance between elements to merge (default: 1e-4)
-            bpy.ops.mesh.dissolve_degenerate(threshold=1e-4)
+            bpy.ops.mesh.dissolve_degenerate(threshold=1e-0)
 
             bpy.ops.object.mode_set(mode='OBJECT')
 

@@ -4,6 +4,7 @@ from .indented_column import IndentedColumn
 from .hexagonal_bullet import HexagonalBullet
 from .hexagonal_bullet_rosette import HexagonalBulletRosette
 from .roughened import Roughened
+from .aggregate import Aggregate
 
 __all__ = [
     "Geometry",
@@ -12,4 +13,5 @@ __all__ = [
     "HexagonalBullet",
     "HexagonalBulletRosette",
     "Roughened",
+    "Aggregate",
 ]

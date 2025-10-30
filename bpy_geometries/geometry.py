@@ -36,10 +36,10 @@ class Geometry(ABC):
         Operates on all mesh objects in the scene.
         """
         # Store current mode
-        current_mode = bpy.context.object.mode if bpy.context.object else 'OBJECT'
+        current_mode = bpy.context.object.mode if bpy.context.object else "OBJECT"
 
         # Find all mesh objects
-        mesh_objects = [obj for obj in bpy.data.objects if obj.type == 'MESH']
+        mesh_objects = [obj for obj in bpy.data.objects if obj.type == "MESH"]
 
         if not mesh_objects:
             return
@@ -47,14 +47,14 @@ class Geometry(ABC):
         # Process each mesh object
         for obj in mesh_objects:
             bpy.context.view_layer.objects.active = obj
-            bpy.ops.object.mode_set(mode='EDIT')
-            bpy.ops.mesh.select_all(action='SELECT')
+            bpy.ops.object.mode_set(mode="EDIT")
+            bpy.ops.mesh.select_all(action="SELECT")
 
             # Dissolve degenerate geometry
             # threshold: minimum distance between elements to merge (default: 1e-4)
-            bpy.ops.mesh.dissolve_degenerate(threshold=1e-0)
+            bpy.ops.mesh.dissolve_degenerate(threshold=1e-1)
 
-            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.object.mode_set(mode="OBJECT")
 
         print(f"Cleaned up degenerate faces from {len(mesh_objects)} mesh object(s)")
 

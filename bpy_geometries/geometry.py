@@ -4,8 +4,9 @@ from abc import ABC, abstractmethod
 
 
 class Geometry(ABC):
-    def __init__(self, output_dir: str):
+    def __init__(self, output_dir: str, triangulate: bool = True):
         self.output_dir: str = output_dir
+        self.triangulate: bool = triangulate
 
     @abstractmethod
     def generate(self) -> str:
@@ -68,7 +69,7 @@ class Geometry(ABC):
         bpy.ops.wm.obj_export(
             filepath=filepath,
             export_selected_objects=False,
-            export_triangulated_mesh=True,
+            export_triangulated_mesh=self.triangulate,
             export_materials=False,
         )
         return filepath

@@ -174,6 +174,25 @@ class Roughened(Geometry):
         print(f"\nExported to: {filepath}")
         return filepath
 
+    def _create_geometry(self) -> bpy.types.Object:
+        """Create the roughened geometry object without exporting."""
+        # Create the base geometry
+        base_geometry = self.geometry
+        obj = self._create_base_geometry_object(base_geometry)
+
+        print(f"Created base geometry: {type(base_geometry).__name__}")
+        print(f"Target max edge length: {self.max_edge_length}")
+        print(f"Displacement sigma: {self.displacement_sigma}")
+        print(f"Merge distance: {self.merge_distance}")
+        print()
+
+        # Apply roughening
+        self.subdivide_until_max_edge_length(obj)
+        self.apply_random_displacement(obj)
+        self.merge_vertices_by_distance(obj)
+
+        return obj
+
     def _create_base_geometry_object(self, geometry: Geometry) -> bpy.types.Object:
         """Create the base geometry object in the scene without exporting."""
         # All Geometry subclasses should implement _create_geometry()

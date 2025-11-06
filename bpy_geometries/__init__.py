@@ -3,6 +3,7 @@ from .hexagonal_column import HexagonalColumn
 from .indented_column import IndentedColumn
 from .hexagonal_bullet import HexagonalBullet
 from .hexagonal_bullet_rosette import HexagonalBulletRosette
+from .droxtal import Droxtal
 from .roughened import Roughened
 from .aggregate import Aggregate
 
@@ -12,6 +13,7 @@ __all__ = [
     "IndentedColumn",
     "HexagonalBullet",
     "HexagonalBulletRosette",
+    "Droxtal",
     "Roughened",
     "Aggregate",
 ]

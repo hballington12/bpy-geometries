@@ -150,21 +150,11 @@ class HexagonalBulletRosette(Geometry):
 
         # Get initial vertex count
         bpy.ops.object.mode_set(mode="OBJECT")
-        initial_vert_count = len(obj.data.vertices)
 
         # Merge vertices by distance
         bpy.ops.object.mode_set(mode="EDIT")
         bpy.ops.mesh.remove_doubles(threshold=merge_distance)
         bpy.ops.object.mode_set(mode="OBJECT")
-
-        final_vert_count = len(obj.data.vertices)
-        print(
-            f"Merged {merged_count} vertices within distance {merge_distance} (from {initial_vert_count} to {final_vert_count})"
-        )
-
-        print(
-            f"Merged {merged_count} vertices within distance {merge_distance} (from {initial_vert_count} to {final_vert_count})"
-        )
 
     def _create_geometry(self) -> bpy.types.Object:
         """Create the hexagonal bullet rosette geometry and return the object without exporting."""
@@ -258,9 +248,9 @@ class HexagonalBulletRosette(Geometry):
             bpy.context.view_layer.objects.active = aggregate
         bpy.ops.object.shade_flat()
 
-        # # Merge vertices at the origin (all bullets share a vertex at origin)
-        # print("\nMerging vertices at origin...")
-        # self._merge_vertices_by_distance(aggregate, merge_distance=0.1)
+        # Merge vertices at the origin (all bullets share a vertex at origin)
+        print("\nMerging vertices at origin...")
+        self._merge_vertices_by_distance(aggregate, merge_distance=0.1)
 
         return aggregate
 

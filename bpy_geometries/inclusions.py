@@ -1,7 +1,9 @@
-import bpy
-import random
 import math
+import random
+
+import bpy
 from mathutils import Euler, Vector
+
 from .geometry import Geometry
 
 
@@ -196,7 +198,7 @@ class Inclusions(Geometry):
         print(f"\nDeleted inclusion helper geometry")
 
         # Export the final geometry
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.to_filename()}_{self._generate_uuid()}.obj"
         filepath = self._export_obj(filename)
 
         print(f"\nExported to: {filepath}")

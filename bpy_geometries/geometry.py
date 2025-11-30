@@ -1,6 +1,8 @@
-import bpy
 import os
+import uuid
 from abc import ABC, abstractmethod
+
+import bpy
 
 
 class Geometry(ABC):
@@ -24,6 +26,10 @@ class Geometry(ABC):
             Filename string with geometry name and parameter key-value pairs
         """
         pass
+
+    def _generate_uuid(self) -> str:
+        """Generate a 6-character unique identifier."""
+        return uuid.uuid4().hex[:6]
 
     def _clear_scene(self):
         bpy.ops.object.select_all(action="SELECT")

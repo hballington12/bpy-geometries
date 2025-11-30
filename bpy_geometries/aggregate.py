@@ -1,8 +1,10 @@
-import bpy
-import bmesh
-import random
 import math
-from mathutils import Vector, Euler
+import random
+
+import bmesh
+import bpy
+from mathutils import Euler, Vector
+
 from .geometry import Geometry
 
 
@@ -222,7 +224,7 @@ class Aggregate(Geometry):
 
         obj = self._create_geometry()
 
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.to_filename()}_{self._generate_uuid()}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

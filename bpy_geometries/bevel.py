@@ -1,4 +1,5 @@
 import bpy
+
 from .geometry import Geometry
 
 
@@ -54,7 +55,7 @@ class Bevel(Geometry):
         self._apply_bevel_modifier(base_obj)
 
         # Export the final geometry
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.to_filename()}_{self._generate_uuid()}.obj"
         filepath = self._export_obj(filename)
 
         print(f"\nExported to: {filepath}")

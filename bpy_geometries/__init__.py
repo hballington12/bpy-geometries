@@ -10,6 +10,7 @@ from .hexagonal_column import HexagonalColumn
 from .inclusions import Inclusions
 from .indented_column import IndentedColumn
 from .roughened import Roughened
+from .roughened_mmg import RoughenedMMG
 
 __all__ = [
     "Aggregate",
@@ -24,4 +25,5 @@ __all__ = [
     "Inclusions",
     "IndentedColumn",
     "Roughened",
+    "RoughenedMMG",
 ]

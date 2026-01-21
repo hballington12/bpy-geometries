@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bpy-geometries"
-version = "0.1.0"
+version = "0.2.0"
 description = "Geometry generation utilities for ice crystal particles using Blender Python API"
 requires-python = "==3.11.*"
 

@@ -1,11 +1,14 @@
 import bpy
+import bmesh
 import os
 import uuid
+import warnings
 from abc import ABC, abstractmethod
+from mathutils.bvhtree import BVHTree
 
 
 class Geometry(ABC):
-    def __init__(self, output_dir: str, triangulate: bool = True):
+    def __init__(self, output_dir: str, triangulate: bool = False):
         self.output_dir: str = output_dir
         self.triangulate: bool = triangulate
         self._uuid: str = uuid.uuid4().hex[:8]
@@ -50,6 +53,59 @@ class Geometry(ABC):
         bpy.ops.object.select_all(action="SELECT")
         bpy.ops.object.delete()
 
+    def _check_self_intersection(self, obj: bpy.types.Object) -> bool:
+        """
+        Check if mesh has self-intersecting faces.
+
+        Uses BVHTree overlap detection to find faces that intersect
+        but don't share vertices.
+
+        Args:
+            obj: Blender mesh object to check
+
+        Returns:
+            True if self-intersecting, False otherwise
+        """
+        bpy.context.view_layer.objects.active = obj
+        obj.select_set(True)
+        bpy.ops.object.mode_set(mode="EDIT")
+
+        bm = bmesh.from_edit_mesh(obj.data)
+        bm.faces.ensure_lookup_table()
+
+        tree = BVHTree.FromBMesh(bm, epsilon=0.00001)
+        overlap = tree.overlap(tree)
+
+        for i, j in overlap:
+            if i != j:
+                face_i = bm.faces[i]
+                face_j = bm.faces[j]
+                shared_verts = set(face_i.verts) & set(face_j.verts)
+                if len(shared_verts) == 0:
+                    bpy.ops.object.mode_set(mode="OBJECT")
+                    obj.select_set(False)
+                    return True
+
+        bpy.ops.object.mode_set(mode="OBJECT")
+        obj.select_set(False)
+        return False
+
+    def _validate_geometry(self):
+        """
+        Run validation checks on all mesh objects in the scene.
+
+        Emits warnings for any issues found but does not halt execution.
+        """
+        mesh_objects = [obj for obj in bpy.data.objects if obj.type == "MESH"]
+
+        for obj in mesh_objects:
+            if self._check_self_intersection(obj):
+                warnings.warn(
+                    f"Self-intersection detected in mesh '{obj.name}'. "
+                    "This may cause issues with boolean operations or rendering.",
+                    UserWarning
+                )
+
     def _cleanup_degenerate_faces(self):
         """
         Remove degenerate mesh elements (very thin triangles, zero-area faces).
@@ -83,6 +139,9 @@ class Geometry(ABC):
     def _export_obj(self, filename):
         filepath = os.path.join(self.output_dir, filename)
         os.makedirs(self.output_dir, exist_ok=True)
+
+        # Validate geometry before export
+        self._validate_geometry()
 
         # Clean up degenerate faces before export
         self._cleanup_degenerate_faces()

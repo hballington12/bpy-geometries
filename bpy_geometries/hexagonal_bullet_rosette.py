@@ -264,7 +264,7 @@ class HexagonalBulletRosette(Geometry):
         obj = self._create_geometry()
 
         # Export
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.get_full_filename()}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

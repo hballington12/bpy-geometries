@@ -222,7 +222,7 @@ class Aggregate(Geometry):
 
         obj = self._create_geometry()
 
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.get_full_filename()}.obj"
         filepath = self._export_obj(filename)
 
         return filepath

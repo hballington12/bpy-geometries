@@ -168,7 +168,7 @@ class Roughened(Geometry):
         self.merge_vertices_by_distance(obj)
 
         # Export with modified filename
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.get_full_filename()}.obj"
         filepath = self._export_obj(filename)
 
         print(f"\nExported to: {filepath}")

@@ -1,4 +1,6 @@
 from .aggregate import Aggregate
+from .aggregate_intersecting import AggregateIntersecting
+from .aggregate_touching import AggregateTouching
 from .bevel import Bevel
 from .droxtal import Droxtal
 from .geometry import Geometry
@@ -10,14 +12,16 @@ from .indented_column import IndentedColumn
 from .roughened import Roughened
 
 __all__ = [
+    "Aggregate",
+    "AggregateIntersecting",
+    "AggregateTouching",
     "Bevel",
+    "Droxtal",
     "Geometry",
-    "HexagonalColumn",
-    "IndentedColumn",
     "HexagonalBullet",
     "HexagonalBulletRosette",
+    "HexagonalColumn",
     "Inclusions",
-    "Droxtal",
+    "IndentedColumn",
     "Roughened",
-    "Aggregate",
 ]

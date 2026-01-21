@@ -1,5 +1,6 @@
 import bpy
 import os
+import uuid
 from abc import ABC, abstractmethod
 
 
@@ -7,6 +8,12 @@ class Geometry(ABC):
     def __init__(self, output_dir: str, triangulate: bool = True):
         self.output_dir: str = output_dir
         self.triangulate: bool = triangulate
+        self._uuid: str = uuid.uuid4().hex[:8]
+
+    @property
+    def geometry_id(self) -> str:
+        """Returns this geometry's unique identifier."""
+        return self._uuid
 
     @abstractmethod
     def generate(self) -> str:
@@ -15,15 +22,29 @@ class Geometry(ABC):
     @abstractmethod
     def to_filename(self) -> str:
         """
-        Return a complete filename (without extension) for this geometry.
+        Return filename parameters (without extension or UUID) for this geometry.
 
         This string should contain the geometry type and all parameters needed
-        to reconstruct the geometry.
+        to reconstruct the geometry. The UUID is appended separately by
+        get_full_filename().
 
         Returns:
             Filename string with geometry name and parameter key-value pairs
         """
         pass
+
+    def get_full_filename(self) -> str:
+        """
+        Return complete filename with UUID appended.
+
+        This should be called by generate() to get the final filename.
+        The UUID ensures unique filenames even for geometries with
+        identical parameters.
+
+        Returns:
+            Complete filename (without extension) including UUID
+        """
+        return f"{self.to_filename()}_{self._uuid}"
 
     def _clear_scene(self):
         bpy.ops.object.select_all(action="SELECT")

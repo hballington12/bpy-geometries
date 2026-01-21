@@ -54,7 +54,7 @@ class Bevel(Geometry):
         self._apply_bevel_modifier(base_obj)
 
         # Export the final geometry
-        filename = f"{self.to_filename()}.obj"
+        filename = f"{self.get_full_filename()}.obj"
         filepath = self._export_obj(filename)
 
         print(f"\nExported to: {filepath}")
